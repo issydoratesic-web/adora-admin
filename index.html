@@ -1,55 +1,268 @@
-<!-- Primjer koda koji klijentica koristi na svom mobitelu za skeniranje -->
-<div id="app">
-    <h2>Moja Adora Kartica</h2>
-    <div class="stamp-container">
-        <!-- Prikaz skupljenih štambilja -->
-        <div class="stamps-grid" id="stampsGrid"></div>
-    </div>
-    
-    <!-- Gumb koji otvara kameru unutar aplikacije -->
-    <button id="scanBtn">✨ Skeniraj za štambilj ✨</button>
-    <video id="cameraPreview" style="display:none; width: 100%; max-width: 300px;"></video>
-</div>
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADORA BEAUTY CONCEPT - Loyalty Club</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #d4af37; /* Luksuzna Zlatna */
+            --dark-bg: #111111; 
+            --card-bg: #1a1a1a; 
+            --white: #ffffff;
+            --gray-text: #aaaaaa;
+        }
 
-<script src="https://unpkg.com/@html5-qrcode/html5-qrcode"></script>
-<script>
-    const scanBtn = document.getElementById('scanBtn');
-    const preview = document.getElementById('cameraPreview');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--white);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
 
-    scanBtn.addEventListener('click', () => {
-        preview.style.display = 'block';
-        const html5QrCode = new Html5Qrcode("cameraPreview");
+        .loyalty-container {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 28px;
+            padding: 40px 25px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loyalty-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin: 0;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        p.brand-sub {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: var(--primary-color);
+            margin: 5px 0 25px 0;
+            font-weight: 600;
+        }
+
+        .stamps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .stamp-circle {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: 2px dashed rgba(212, 175, 55, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: rgba(212, 175, 55, 0.4);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .stamp-circle.active {
+            border: 2px solid var(--primary-color);
+            background: var(--primary-color);
+            color: #111111;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+            transform: scale(1.08);
+        }
+
+        .stamp-circle.active::before {
+            content: '✨';
+            font-size: 20px;
+        }
+
+        .instruction-box {
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .instruction-title {
+            font-size: 14px;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .instruction-text {
+            font-size: 12px;
+            color: var(--gray-text);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .footer-text {
+            font-size: 10px;
+            color: #555555;
+            margin-top: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Gumb za poništavanje (samo za tebe u salonu) */
+        .admin-reset-btn {
+            background: transparent;
+            border: 1px dashed #444;
+            color: #444;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            margin-top: 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+        .admin-reset-btn:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loyalty-container">
+        <div class="logo-area">
+            <h1>Adora</h1>
+            <p class="brand-sub">Beauty Concept</p>
+        </div>
+
+        <div class="instruction-title" id="cardStatus">Vaša kartica vjernosti</div>
         
-        html5QrCode.start(
-            { facingMode: "environment" }, // Koristi stražnju kameru
-            { fps: 10, qrbox: 250 },
-            (qrCodeText) => {
-                // Kada uspješno skenira QR kod sa tvog pulta
-                html5QrCode.stop();
-                preview.style.display = 'none';
-                
-                // Šaljemo tajni token na naš server da potvrdimo dolazak
-                posaljiStampiljNaServer(qrCodeText);
-            },
-            (errorMessage) => { /* stalno skenira dok ne nađe kod */ }
-        );
-    });
+        <!-- Mreža od 8 štambilja (8. donosi poklon/popust) -->
+        <div class="stamps-grid">
+            <div class="stamp-circle" id="s1">1</div>
+            <div class="stamp-circle" id="s2">2</div>
+            <div class="stamp-circle" id="s3">3</div>
+            <div class="stamp-circle" id="s4">4</div>
+            <div class="stamp-circle" id="s5">5</div>
+            <div class="stamp-circle" id="s6">6</div>
+            <div class="stamp-circle" id="s7">7</div>
+            <div class="stamp-circle" id="s8">🎁</div>
+        </div>
 
-    function posaljiStampiljNaServer(kod) {
-        // Pozivamo backend koji provjerava poklapa li se kod sa "ADORA-TAJNA-LOZINKA-2026"
-        fetch('/api/dodaj-stampilj', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: kod, userId: 'trenutni_korisnik_id' })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                alert('Čestitamo! Dobili ste novi štambilj! 🎉');
-                osvjeziKarticu();
+        <div class="instruction-box">
+            <div class="instruction-title" id="infoTitle">Skupljajte posjete ✨</div>
+            <p class="instruction-text" id="infoText">
+                Prilikom svakog posjeta skenirajte QR kod na pultu kako biste ostvarili pravo na nagradu nakon 8 dolazaka.
+            </p>
+        </div>
+
+        <button class="admin-reset-btn" onclick="resetirajKarticu()">Resetiraj karticu (Salon Admin)</button>
+
+        <div class="footer-text">Hvala vam na povjerenju</div>
+    </div>
+
+    <script>
+        // ---- CONFIG: Ovdje upiši lozinku koju ćeš ti reći klijentici na pultu ----
+        const TAJNA_LOZINKA = "ADORA2026"; 
+
+        // Učitaj trenutni broj štambilja iz lokalne memorije mobitela klijentice
+        let brojStampilja = parseInt(localStorage.getItem('adora_loyalty_stamps')) || 0;
+
+        // Provjeri je li klijentica upravo skenirala QR kod s pulta (?skenirano=true)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('skenirano') === 'true') {
+            
+            // Makni parametar iz URL-a kako se štambilj ne bi stalno dodavao kod osvježavanja stranice
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+            if (brojStampilja < 8) {
+                // Pitaj klijenticu za dnevnu lozinku koju joj ti kažeš na blagajni
+                let unesenaLozinka = prompt("Unesite lozinku salona kako biste dobili štambilj:");
+                
+                if (unesenaLozinka === TAJNA_LOZINKA) {
+                    brojStampilja += 1;
+                    localStorage.setItem('adora_loyalty_stamps', brojStampilja);
+                    alert(`✨ Uspješno dodan štambilj! Sada imate ${brojStampilja}/8.`);
+                } else if (unesenaLozinka !== null) {
+                    alert("❌ Pogrešna lozinka salona. Pokušajte ponovno.");
+                }
             } else {
-                alert('Greška: ' + data.message);
+                alert("🎁 Već ste popunili karticu! Iskoristite svoju nagradu u salonu.");
             }
-        });
-    }
-</script>
+        }
+
+        // Nacrtaj štambilje na ekranu
+        prikaziKarticu();
+
+        function prikaziKarticu() {
+            for (let i = 1; i <= 8; i++) {
+                const krug = document.getElementById(`s${i}`);
+                if (i <= brojStampilja) {
+                    krug.classList.add('active');
+                    krug.innerHTML = ''; 
+                } else {
+                    krug.classList.remove('active');
+                    krug.innerHTML = i === 8 ? '🎁' : i;
+                }
+            }
+
+            if (brojStampilja >= 8) {
+                document.getElementById('cardStatus').innerHTML = "✨ NAGRADA SPREMNA! ✨";
+                document.getElementById('cardStatus').style.color = "#d4af37";
+                document.getElementById('infoTitle').innerHTML = "🎁 Čestitamo! 🎁";
+                document.getElementById('infoText').innerHTML = "Ostvarili ste pravo na Vaš poklon ili popust. Pokažite ovaj ekran na pultu salona.";
+            }
+        }
+
+        // Funkcija kojom TI (salon) resetiraš njezinu karticu nakon što preuzme nagradu
+        function resetirajKarticu() {
+            let adminLozinka = prompt("Unesite ADMIN lozinku za resetiranje kartice:");
+            if (adminLozinka === TAJNA_LOZINKA) {
+                if (confirm("Jeste li sigurni da želite poništiti sve štambilje ove klijentice?")) {
+                    localStorage.setItem('adora_loyalty_stamps', 0);
+                    brojStampilja = 0;
+                    prikaziKarticu();
+                    document.getElementById('cardStatus').innerHTML = "Vaša kartica vjernosti";
+                    document.getElementById('cardStatus').style.color = "#ffffff";
+                    document.getElementById('infoTitle').innerHTML = "Skupljajte posjete ✨";
+                    document.getElementById('infoText').innerHTML = "Prilikom svakog posjeta skenirajte QR kod na pultu kako biste ostvarili pravo na nagradu nakon 8 dolazaka.";
+                    alert("Kartica je uspješno resetirana na 0.");
+                }
+            } else if (adminLozinka !== null) {
+                alert("Pogrešna admin lozinka.");
+            }
+        }
+    </script>
+</body>
+</html>
