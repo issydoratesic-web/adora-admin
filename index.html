@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADORA BEAUTY CONCEPT - Salon Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #d4af37; /* Luksuzna Zlatna */
+            --dark-bg: #111111; /* Još tamnija, elegantnija pozadina */
+            --card-bg: #1a1a1a; /* Pozadina admin kartice */
+            --white: #ffffff;
+            --gray-text: #aaaaaa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--white);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .admin-container {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 28px;
+            padding: 40px 25px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Elegantni svjetlosni efekt u pozadini */
+        .admin-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin: 0;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        p.brand-sub {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: var(--primary-color);
+            margin: 5px 0 30px 0;
+            font-weight: 600;
+        }
+
+        .qr-wrapper {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 24px;
+            display: inline-block;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 3px solid var(--primary-color);
+            position: relative;
+        }
+
+        .qr-wrapper img {
+            display: block;
+            width: 230px;
+            height: 230px;
+        }
+
+        .instruction-box {
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .instruction-title {
+            font-size: 14px;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .instruction-text {
+            font-size: 12px;
+            color: var(--gray-text);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .footer-text {
+            font-size: 10px;
+            color: #555555;
+            margin-top: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <div class="logo-area">
+            <h1>Adora</h1>
+            <p class="brand-sub">Beauty Concept</p>
+        </div>
+
+        <!-- Generiranje točnog QR koda s tvojom tajnom šifrom -->
+        <div class="qr-wrapper">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=ADORA-TAJNA-LOZINKA-2026&color=1a1a1a" alt="Adora Loyalty QR">
+        </div>
+
+        <!-- Upute za klijentice na pultu -->
+        <div class="instruction-box">
+            <div class="instruction-title">✨ Skenirajte za štambilj ✨</div>
+            <p class="instruction-text">
+                Otvorite svoju digitalnu loyalty karticu na mobitelu, kliknite na <strong>"Skeniraj za štambilj"</strong> i usmjerite kameru prema ovom ekranu.
+            </p>
+        </div>
+
+        <div class="footer-text">Hvala vam na povjerenju</div>
+    </div>
+
+</body>
+</html>
